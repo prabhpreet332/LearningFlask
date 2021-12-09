@@ -1,0 +1,70 @@
+<html>
+
+<head>
+	<title>Chat Room</title>
+	<script src="https://cdn.socket.io/4.4.0/socket.io.min.js"
+		integrity="sha384-1fOn6VtTq3PWwfsOrk45LnYcGosJwzMHv+Xh/Jx5303FVOXzEnw0EpLv30mtjmlj"
+		crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+</head>
+
+<body>
+	<label for="sender">Name:</label>
+	<input type="text" id="sender" value="User">
+	<!-- <button id="submit-sender-name">Submit</button> -->
+
+	<script type="text/javascript">
+		$(document).ready(function () {			
+			var sender_name = document.getElementById("sender").value;
+			console.log(sender_name);
+			var socket = io();
+			socket.on('connect', function () {
+				socket.send(sender_name + ":" + ` has connected!`);
+				console.log("Socket id = " + socket.id);
+			});
+
+			socket.on('message', function (msg) {
+				$("#messages").append('<p>' + msg + '</p>');
+				console.log('Received message');
+			});
+
+			socket.on('chat_message', function (msg) {
+				$("#messages").append('<p>' + " chat_messageHTML " + msg + '</p>');
+				console.log('chat_message - Received message');
+			});
+
+			$('#sendbutton').on('click', function () {
+				socket.send( sender_name + ": " + $('#myMessage').val());
+				$('#myMessage').val('');
+			});
+
+		});
+	</script>
+	<div>
+		<h1 style="text-align: center;">Anonymous Chat</h1>
+	</div>
+	<div style="text-align: center;">
+		<div id="messages"></div>
+		<input type="text" id="myMessage">
+		<button id="sendbutton">Send</button>
+	</div>
+
+</body>
+
+</html>
+
+
+<!-- 
+
+FYqeUDCaOlwmH4qMAAAA: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+tLQl1KQmtB7GkpyoAAAC: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+127.0.0.1 - - [09/Dec/2021 05:53:38] "GET /socket.io/?EIO=4&transport=polling&t=NsSalYS&sid=tLQl1KQmtB7GkpyoAAAC HTTP/1.1" 200 -
+gJvX5Qz78OBiMbDcAAAE: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+LNmpoXnL_uyRiPPrAAAG: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+127.0.0.1 - - [09/Dec/2021 05:53:38] "GET /socket.io/?EIO=4&transport=polling&t=NsSalYX&sid=LNmpoXnL_uyRiPPrAAAG HTTP/1.1" 200 -
+lr26tj1R_JwVNE-SAAAI: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+127.0.0.1 - - [09/Dec/2021 05:53:38] "GET /socket.io/?EIO=4&transport=polling&t=NsSalZ9&sid=lr26tj1R_JwVNE-SAAAI HTTP/1.1" 200 -
+gdTt_zTWs60Kj_AfAAAK: Sending packet MESSAGE data 2["message","xyz: has connected!"]
+['ukWdxR715IfX07yCAAAB', 'vNt1jP7DXeYfynwuAAAD', 'MBKAJwWtKiaX-PtOAAAF', 'TbFwUIqNfFCOpEDEAAAH', 'y0kkTDszb6N-3egFAAAJ', '8n_M5yoE05ksno9gAAAL'] 
+
+-->
